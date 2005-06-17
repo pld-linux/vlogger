@@ -1,0 +1,196 @@
+--- vlogger-1.3.orig/debian/patches/manpage.patch
++++ vlogger-1.3/debian/patches/manpage.patch
+@@ -0,0 +1,11 @@
++--- vlogger-1.3.orig/vlogger.1
+++++ vlogger-1.3/vlogger.1
++@@ -153,7 +153,7 @@
++ .PP
++ Then call it from a customlog:
++ .PP
++-CustomLog \*(L"| /usr/local/sbin/vlogger \-s access.log \-u www-logs \-g www-logs /var/log/apache\*(R" combined
+++CustomLog \*(L"| /usr/sbin/vlogger \-s access.log \-u www-logs \-g www-logs /var/log/apache\*(R" combined
++ .SH "OPTIONS"
++ .IX Header "OPTIONS"
++ Options are given in short format on the command line.
+--- vlogger-1.3.orig/debian/patches/numeric.patch
++++ vlogger-1.3/debian/patches/numeric.patch
+@@ -0,0 +1,10 @@
++--- tmp/vlogger.orig   2005-03-19 02:08:30.000000000 +0100
+++++ tmp/vlogger        2005-03-30 14:41:50.000000000 +0200
++@@ -454,7 +454,7 @@
++             $log_line =~ s/^\S*\s+//o;
++         }
++
++-        if ( $reqsize =~ m/\d|/ && $reqsize > 0 ) {
+++        if ( $reqsize =~ m/^\d*$/ && $reqsize > 0 ) {
++             $tracker{$vhost} += $reqsize;
++         }
+--- vlogger-1.3.orig/debian/patches/defaultbugfix.patch
++++ vlogger-1.3/debian/patches/defaultbugfix.patch
+@@ -0,0 +1,10 @@
++--- vlogger-1.3.orig/vlogger
+++++ vlogger-1.3/vlogger
++@@ -380,6 +380,7 @@
++         if ( $vhost =~ m#[/\\]# ) { $vhost = "default" }
++         $vhost =~ /(.*)/o;
++         $vhost = $1;
+++	$vhost = 'default' unless $vhost;
++ 
++         if ( $OPTS{'i'} ) {
++             $reqsize = $this_line[1] + $this_line[2];
+--- vlogger-1.3.orig/debian/changelog
++++ vlogger-1.3/debian/changelog
+@@ -0,0 +1,37 @@
++vlogger (1.3-3) unstable; urgency=high
++
++  * given build-depends management to cdbs (closes: #302340)
++
++ -- RISKO Gergely <risko@debian.org>  Thu, 31 Mar 2005 13:47:56 +0200
++
++vlogger (1.3-2) unstable; urgency=low
++
++  * cdbsized the package
++  * reqsize bugfix (closes: #302176)
++
++ -- RISKO Gergely <risko@debian.org>  Wed, 30 Mar 2005 21:08:22 +0200
++
++vlogger (1.3-1) unstable; urgency=high
++
++  * new upstream version
++  	* fixed the mysql_create.sql syntax error (closes: #299195)
++  * ensure that $vhost can't be empty (closes: #299794)
++  * non-Debian path in man page changed to a Debian based (closes: #299067)
++  * warning in README.Debian to not use as root and an example for creating
++    non-root system user for web logs is added (closes: #299081)
++  * mention libdbi-perl in README.Debian (closes: #299193)
++
++ -- RISKO Gergely <risko@debian.org>  Sat, 19 Mar 2005 01:51:22 +0100
++
++vlogger (1.1-2) unstable; urgency=low
++
++  * Fixed package description, it was very ugly. (closes: #277268)
++
++ -- RISKO Gergely <risko@debian.org>  Thu, 21 Oct 2004 14:24:58 +0200
++
++vlogger (1.1-1) unstable; urgency=low
++
++  * Initial Release.
++
++ -- RISKO Gergely <risko@debian.org>  Thu, 24 Apr 2003 13:15:39 +0200
++
+--- vlogger-1.3.orig/debian/control
++++ vlogger-1.3/debian/control
+@@ -0,0 +1,20 @@
++Source: vlogger
++Section: web
++Priority: optional
++Maintainer: RISKO Gergely <risko@debian.org>
++Build-Depends-Indep: cdbs (>= 0.4.23-1.1), debhelper (>= 4.1.0), patchutils
++Standards-Version: 3.6.1.1
++
++Package: vlogger
++Architecture: all
++Depends: ${perl:Depends}, libtimedate-perl
++Suggests: libdbi-perl
++Description: virtual web logfile rotater/parser
++ Vlogger is a little piece of code borned to handle dealing with large
++ amounts of virtualhost logs.  It's bad news that apache can't do this
++ on its own.  Vlogger takes piped input from apache, splits it off to
++ separate files based on the first field.  It uses a file handle cache
++ so it can't run out of file descriptors.  It will also start a new
++ logfile every night at midnight, and maintain a symlink to the most
++ recent file.  For security, it can drop privileges and do a chroot to
++ the logs directory.
+--- vlogger-1.3.orig/debian/README.Debian
++++ vlogger-1.3/debian/README.Debian
+@@ -0,0 +1,23 @@
++vlogger for Debian
++------------------
++
++1.
++
++It is not a good choose to run this program as root on production systems.
++So use -u and -g directive, as the manpage advise you.
++
++Here is an example, how can you create a system user for this reason:
++
++adduser --home /var/log/vlogger  --system --ingroup nogroup www-logs
++chown www-logs.nogroup /var/log/vlogger
++
++-=-
++
++2.
++
++If you want to use the DBI interface for bandwidth statistics, you should
++install the libdbi-perl package also (if you not installed it yet anyway,
++since this package suggests it).  Command for installing:
++apt-get install libdbi-perl
++
++ -- RISKO Gergely <risko@debian.org>, Sat, 19 Mar 2005 01:43:17 +0100
+--- vlogger-1.3.orig/debian/compat
++++ vlogger-1.3/debian/compat
+@@ -0,0 +1 @@
++4
+--- vlogger-1.3.orig/debian/dirs
++++ vlogger-1.3/debian/dirs
+@@ -0,0 +1 @@
++usr/sbin
+--- vlogger-1.3.orig/debian/rules
++++ vlogger-1.3/debian/rules
+@@ -0,0 +1,9 @@
++#!/usr/bin/make -f
++
++DEB_AUTO_UPDATE_DEBIAN_CONTROL := true
++
++include /usr/share/cdbs/1/rules/debhelper.mk
++include /usr/share/cdbs/1/rules/simple-patchsys.mk
++
++binary-post-install/vlogger::
++	install $(CURDIR)/vlogger $(CURDIR)/debian/vlogger/usr/sbin
+--- vlogger-1.3.orig/debian/copyright
++++ vlogger-1.3/debian/copyright
+@@ -0,0 +1,8 @@
++This package was debianized by RISKO Gergely <risko@debian.org> on
++Thu, 24 Apr 2003 13:15:39 +0200.
++
++It was downloaded from http://n0rp.chemlab.org/vlogger
++
++Upstream Author: "steve j. kondik" <shade@chemlab.org>
++
++Copyright: LGPL (can be found at /usr/share/common-licenses/LGPL)
+--- vlogger-1.3.orig/debian/docs
++++ vlogger-1.3/debian/docs
+@@ -0,0 +1 @@
++README
+--- vlogger-1.3.orig/debian/vlogger.manpages
++++ vlogger-1.3/debian/vlogger.manpages
+@@ -0,0 +1 @@
++vlogger.1
+--- vlogger-1.3.orig/debian/vlogger.examples
++++ vlogger-1.3/debian/vlogger.examples
+@@ -0,0 +1,2 @@
++vlogger-dbi.conf
++mysql_create.sql
+--- vlogger-1.3.orig/debian/control.in
++++ vlogger-1.3/debian/control.in
+@@ -0,0 +1,20 @@
++Source: vlogger
++Section: web
++Priority: optional
++Maintainer: RISKO Gergely <risko@debian.org>
++Build-Depends-Indep: @cdbs@
++Standards-Version: 3.6.1.1
++
++Package: vlogger
++Architecture: all
++Depends: ${perl:Depends}, libtimedate-perl
++Suggests: libdbi-perl
++Description: virtual web logfile rotater/parser
++ Vlogger is a little piece of code borned to handle dealing with large
++ amounts of virtualhost logs.  It's bad news that apache can't do this
++ on its own.  Vlogger takes piped input from apache, splits it off to
++ separate files based on the first field.  It uses a file handle cache
++ so it can't run out of file descriptors.  It will also start a new
++ logfile every night at midnight, and maintain a symlink to the most
++ recent file.  For security, it can drop privileges and do a chroot to
++ the logs directory.
