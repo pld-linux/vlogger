@@ -1,5 +1,6 @@
 %include        /usr/lib/rpm/macros.perl
 Summary:	virtual web logfile rotater/parser
+Summary(pl):	Narzêdzie do rotacji i parsowania logów z wirtualnych hostów
 Name:		vlogger
 Version:	1.3
 Release:	1
@@ -23,6 +24,16 @@ so it can't run out of file descriptors. It will also start a new
 logfile every night at midnight, and maintain a symlink to the most
 recent file. For security, it can drop privileges and do a chroot to
 the logs directory.
+
+%description -l pl
+Vlogger to ma³y kawa³ek kodu stworzony do obs³ugi du¿ych ilo¶ci logów z
+wirtualnych hostów. Apache niestety nie umie obs³ugiwaæ ich samodzielnie.
+Vlogger pobiera w potoku dane z apache i dzieli je na poszczególne pliki
+bazuj±c na pierwszym polu. Wykorzystuje keszowanie otwartych plików, wiêc nie
+przekroczy maksymalnej liczby deskryptorów plików. Otwiera tak¿e nowy plik
+logów codziennie o pó³nocy i tworzy dowi±zania symboliczne do ostatniego pliku.
+Ze wzglêdów bezpieczeñstwa mo¿e zrzucaæ uprawnienia i chrootowaæ siê do
+katalogu logów.
 
 %prep
 %setup -q
