@@ -3,12 +3,13 @@ Summary:	Virtual web logfile rotater/parser
 Summary(pl):	Narzêdzie do rotacji i parsowania logów z wirtualnych hostów
 Name:		vlogger
 Version:	1.3
-Release:	2
+Release:	3
 License:	GPL
 Group:		Networking/Utilities
 Source0:	http://n0rp.chemlab.org/vlogger/%{name}-%{version}.tar.gz
 # Source0-md5:	4170a4bf7ab8b24373458e8ac820c0a1
 Patch0:		%{name}-debian.patch
+Patch1:		%{name}-vhost.patch
 URL:		http://n0rp.chemlab.org/vlogger/
 BuildRequires:	perl-TimeDate
 BuildRequires:	rpm-perlprov
@@ -38,6 +39,7 @@ mo¿e zrzucaæ uprawnienia i chrootowaæ siê do katalogu logów.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 
