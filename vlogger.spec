@@ -3,7 +3,7 @@ Summary:	Virtual web logfile rotater/parser
 Summary(pl):	Narzêdzie do rotacji i parsowania logów z wirtualnych hostów
 Name:		vlogger
 Version:	1.3
-Release:	3
+Release:	4
 License:	GPL
 Group:		Networking/Utilities
 Source0:	http://n0rp.chemlab.org/vlogger/%{name}-%{version}.tar.gz
