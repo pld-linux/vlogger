@@ -1,0 +1,14 @@
+diff -urN vlogger-1.3.org/vlogger vlogger-1.3/vlogger
+--- vlogger-1.3.org/vlogger	2005-09-11 21:19:03.556187000 +0200
++++ vlogger-1.3/vlogger	2005-09-11 21:30:54.740071016 +0200
+@@ -377,7 +377,9 @@
+         my ($vhost) = $this_line[0];
+         my $reqsize = $this_line[10];
+         $vhost = lc($vhost) || "default";
+-        if ( $vhost =~ m#[/\\]# ) { $vhost = "default" }
++        if ( $vhost =~ m#[/\\]# ) || { $vhost !~ m#[a-zA-Z0-9\-]\.[a-zA-Z0-9\-\.]# ) {
++	    $vhost = "default"
++	}
+         $vhost =~ /(.*)/o;
+         $vhost = $1;
+ 	$vhost = 'default' unless $vhost;
