@@ -1,0 +1,52 @@
+--- vlogger~	2006-11-24 02:45:46.366608000 +0100
++++ vlogger	2006-11-24 02:59:07.076608000 +0100
+@@ -38,7 +38,7 @@
+ 
+ $ENV{PATH} = "/bin:/usr/bin";
+ 
+-my $VERSION = "1.3";
++my $VERSION = "1.3b";
+ 
+ =head1 NAME
+ 
+@@ -114,6 +114,10 @@
+ -v
+ 	Prints version information.
+ 
++-x
++	Accept potentially unsafe vserver names (useful if you replace
++%v with %{DOCUMENT_ROOT}e)
++
+ =head1 DBI USAGE TRACKER
+ 
+ 	Vlogger can automatically keep track of per-virtualhost usage statistics in a
+@@ -150,7 +154,7 @@
+ 
+ # get command line options
+ our %OPTS;
+-getopts( 'f:t:s:hu:g:aeivr:d:', \%OPTS );
++getopts( 'f:t:s:hu:g:aeivxr:d:', \%OPTS );
+ 
+ # print out version
+ if ( $OPTS{'v'} ) {
+@@ -378,8 +382,10 @@
+         my $reqsize = $this_line[10];
+         $vhost = lc($vhost) || "default";
+         if (( $vhost =~ m#[/\\]# ) || ( $vhost !~ m#[a-zA-Z0-9\-]\.[a-zA-Z0-9\-\.]# )) {
+-	    $vhost = "default"
+-	}
++            unless ( $OPTS{'x'} ) {
++                $vhost = "default"
++            }
++        }
+         $vhost =~ /(.*)/o;
+         $vhost = $1;
+ 	$vhost = 'default' unless $vhost;
+@@ -549,6 +555,7 @@
+     print "  -r SIZE                     rotate when file reaches SIZE\n";
+     print "  -d CONFIG                   use DBI usage tracker (see perldoc vlogger)\n";
+     print "  -i                          extract mod_logio instead of filesize\n";
++    print "  -x                          accept potentially unsafe vhost names\n";
+     print "  -h                          display this help\n";
+     print "  -v                          output version information\n\n";
+     print "TEMPLATE may be a filename with Date::Format codes.  The default template\n";
