@@ -10,6 +10,7 @@ Source0:	http://n0rp.chemlab.org/vlogger/%{name}-%{version}.tar.gz
 # Source0-md5:	4170a4bf7ab8b24373458e8ac820c0a1
 Patch0:		%{name}-debian.patch
 Patch1:		%{name}-vhost.patch
+Patch2:		%{name}-allow-paths.patch
 URL:		http://n0rp.chemlab.org/vlogger/
 BuildRequires:	perl-TimeDate
 BuildRequires:	rpm-perlprov
@@ -40,6 +41,7 @@ mo¿e zrzucaæ uprawnienia i chrootowaæ siê do katalogu logów.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p0
 
 %build
 
