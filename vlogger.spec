@@ -43,8 +43,6 @@ mo¿e zrzucaæ uprawnienia i chrootowaæ siê do katalogu logów.
 %patch1 -p1
 %patch2 -p0
 
-%build
-
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man1}
