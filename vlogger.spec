@@ -1,4 +1,3 @@
-%include        /usr/lib/rpm/macros.perl
 Summary:	Virtual web logfile rotater/parser
 Summary(pl.UTF-8):	Narzędzie do rotacji i parsowania logów z wirtualnych hostów
 Name:		vlogger
